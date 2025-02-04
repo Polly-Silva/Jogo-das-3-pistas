@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo das 3 Pistas 🎮</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <style>
+    body {
+      font-family: 'Press Start 2P', cursive;
+      background: linear-gradient(to right, #6a0dad, #ffcc00);
+      color: #ffffff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-top: 20px;
+      text-shadow: 4px 4px 8px rgba(255, 255, 0, 0.8);
+    }
+
+    .container {
+      width: 80%;
+      margin: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+    }
+
+    .pista {
+      background-color: rgba(255, 255, 0, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0px 0px 15px rgba(255, 255, 0, 0.7);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 1.2rem;
+      width: 80%;
+      border-radius: 10px;
+      background-color: #ffcc00;
+      color: #000;
+      border: 2px solid #ffcc00;
+    }
+
+    button {
+      padding: 14px 24px;
+      background-color: #ffcc00;
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out, background-color 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background-color: #d4a600;
+    }
+
+    #resultado {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
+    .score {
+      font-size: 2rem;
+      color: #ffcc00;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Jogo das 3 Pistas 🎮</h1>
+  <p>Descubra a resposta com o menor número de pistas para ganhar mais pontos! 🕹️</p>
+  <div class="container">
+    <div class="pista">
+      <h3>🔍 Pista:</h3>
+      <p id="descricao"></p>
+      <input type="text" id="resposta" placeholder="🎯 Sua resposta">
+      <button onclick="checarResposta()">✅ Responder</button>
+    </div>
+    <div id="resultado" class="hidden">
+      <p class="score">🏆 Pontuação total: <span id="pontos">0</span> 🏆</p>
+      <button onclick="novoJogo()">🔄 Novo Jogo</button>
+    </div>
+  </div>
+
+  <script>
+    let pontos = 0;
+    let indicePista = 0;
+    let perguntaAtual = null;
+    const perguntas = [
+      { resposta: "einstein", pistas: ["🧠 Famoso físico", "⚡ Desenvolveu a teoria da relatividade", "📜 E=mc²"] },
+      { resposta: "nilo", pistas: ["🌊 Maior rio do mundo", "🌍 Localizado na África", "🇪🇬 Passa pelo Egito"] },
+      { resposta: "planeta terra", pistas: ["🌍 Terceiro planeta do Sistema Solar", "🌱 Abriga vida", "💨 Possui atmosfera rica em oxigênio"] },
+      { resposta: "mona lisa", pistas: ["🖼️ Pintura famosa", "🎨 Leonardo da Vinci", "🏛️ Exposta no Museu do Louvre"] }
+    ];
+
+    function selecionarPergunta() {
+      return perguntas[Math.floor(Math.random() * perguntas.length)];
+    }
+
+    function novoJogo() {
+      indicePista = 0;
+      document.getElementById('pontos').innerText = pontos;
+      document.getElementById('resultado').classList.add('hidden');
+      document.getElementById('resposta').value = '';
+      perguntaAtual = selecionarPergunta();
+      exibirPista();
+    }
+
+    function exibirPista() {
+      if (indicePista < perguntaAtual.pistas.length) {
+        document.getElementById('descricao').innerText = perguntaAtual.pistas[indicePista];
+      }
+    }
+
+    function checarResposta() {
+      const respostaUsuario = document.getElementById('resposta').value.trim().toLowerCase();
+      const respostaCorreta = perguntaAtual.resposta.toLowerCase();
+      
+      if (respostaUsuario === respostaCorreta) {
+        let pontosGanhos = 10 - (indicePista * 3);
+        pontos += pontosGanhos > 0 ? pontosGanhos : 1;
+        alert(`🎉 Parabéns! Você acertou e ganhou ${pontosGanhos} pontos! 🎯`);
+        document.getElementById('resultado').classList.remove('hidden');
+      } else {
+        indicePista++;
+        if (indicePista < perguntaAtual.pistas.length) {
+          exibirPista();
+        } else {
+          alert(`❌ Errou! A resposta correta era: ${perguntaAtual.resposta}`);
+          document.getElementById('resultado').classList.remove('hidden');
+        }
+      }
+      document.getElementById('pontos').innerText = pontos;
+    }
+
+    window.onload = novoJogo;
+  </script>
+</body>
+</html>
